@@ -234,7 +234,7 @@ testRange = TestList [ range 3  6  ~?= [3,4,5,6],
 
 range :: Int -> Int -> [Int]
 
-range i j = undefined
+range i j = if i>j then [] else i : range (i+1) j
 
 runRTests :: IO Counts
 runRTests = runTestTT testRange
@@ -255,13 +255,17 @@ isSingleton [_] = True
 isSingleton _   = False
 
 isLong :: [a] -> Bool
-isLong = undefined
+isLong [] = False
+isLong l = length l >= 2
 
 testIsLong :: Test
 testIsLong = TestList [ not (isLong [])   ~? "nil",    -- can convert booleans to tests by naming them via `~?`
                         not (isLong "a")  ~? "one",
                         not (isLong "ab") ~? "two",
                         isLong "abc"      ~? "three" ]
+
+runTestIsLong :: IO Counts
+runTestIsLong = runTestTT testIsLong
 
 listAddTests :: Test
 listAddTests = TestList [ listAdd [1,2,3] ~?= 6,
@@ -282,7 +286,8 @@ listIncrTests =
 
 listIncr :: [Int] -> [Int]
 
-listIncr = undefined
+listIncr [] = []
+listIncr (x : xs) = x + 1 : listIncr xs
 
 runLITests :: IO Counts
 runLITests = runTestTT listIncrTests
