@@ -37,7 +37,7 @@ encodeFile :: FilePath -> IO ()
 encodeFile f = do
   let outFile = f ++ ".code"
   contents <- readFile f
-  writeFile outFile (encodeContent f)
+  writeFile outFile (encodeContent contents)
 
 main :: IO ()
 main = do

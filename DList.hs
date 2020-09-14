@@ -37,7 +37,7 @@ append :: DList a -> DList a -> DList a
 append xs ys = appendAux (toList xs) (toList ys)
   where
     appendAux :: [a] -> [a] -> DList a
-    appendAux [] ys = returnDList ys
+    appendAux [s] ys = returnDList ys
       where
         returnDList :: [a] -> [a] -> [a]
         returnDList ys _ = ys
