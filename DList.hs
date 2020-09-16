@@ -1,3 +1,5 @@
+{-# LANGUAGE BlockArguments #-}
+
 module DList where
 
 import Test.HUnit
@@ -11,16 +13,24 @@ dlist :: DList Int
 dlist = \x -> 1 : 2 : 3 : x -- end is "x"
 
 empty :: DList a
-empty = returnEmpty
-  where
-    returnEmpty :: [a] -> [a]
-    returnEmpty ys = ys
+empty = id
+
+testEmpty :: Test
+testEmpty =
+  "empty"
+    ~: TestList
+      [ empty "a" ~?= "a",
+        empty "" ~?= "",
+        empty "abc" ~?= ['a', 'b', 'c']
+      ]
+
+runTestEmpty :: IO Counts
+runTestEmpty = runTestTT testEmpty
 
 singleton :: a -> DList a
-singleton x = returnSingleton x
-  where
-    returnSingleton :: a -> [a] -> [a]
-    returnSingleton x ys = x : ys
+singleton x = (x :)
+
+-- singleton (:)
 
 testSingleton :: Test
 testSingleton =
@@ -34,14 +44,9 @@ runTestSingleton :: IO Counts
 runTestSingleton = runTestTT testSingleton
 
 append :: DList a -> DList a -> DList a
-append xs ys = appendAux (toList xs) (toList ys)
-  where
-    appendAux :: [a] -> [a] -> DList a
-    appendAux [s] ys = returnDList ys
-      where
-        returnDList :: [a] -> [a] -> [a]
-        returnDList ys _ = ys
-    appendAux (x : xs) ys = appendAux xs (x : ys)
+append = (.)
+
+-- append x y = \z -> x (y z)
 
 testAppend :: Test
 testAppend =
@@ -52,10 +57,10 @@ runTestAppend :: IO Counts
 runTestAppend = runTestTT testAppend
 
 cons :: a -> DList a -> DList a
-cons = undefined
+cons = append . singleton
 
 fromList :: [a] -> DList a
-fromList = undefined
+fromList xs = (xs ++)
 
 toList :: DList a -> [a]
 toList x = x []
