@@ -74,12 +74,14 @@ testDList = do
         ]
   return ()
 
+-- create list of 10000 characters and take last element; O(n^2)
 micro1 :: Char
 micro1 = last (t 10000 "")
   where
     t 0 l = l
     t n l = t (n -1) (l ++ "s")
 
+-- O(n)
 micro2 :: Char
 micro2 = last (toList (t 10000 empty))
   where
